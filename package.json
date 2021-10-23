@@ -29,7 +29,7 @@
     "pm2": "^5.0.0",
     "pmx": "^1.6.7",
     "request": "^2.88.0",
-    "strip-ansi": "^6.0.0"
+    "strip-ansi": "^7.0.0"
   },
   "config": {
     "discord_url": null,
