@@ -153,15 +153,15 @@ function createMessage(data, eventName, altDescription) {
     exception: (data, msg) =>
       `# 🚨 **[EXCEPTION]** in **${data.process.name}** #\n\`\`\`\nTime: ${timestamp}\n\n${msg}\n\`\`\``,
     start: (data, msg) =>
-      `# 🟢 **[PROCESS STARTED]** #\n\`\`\`\nProcess **${data.process.name}** is now online.\nTime: ${timestamp}\n\`\`\``,
+      `# 🟢 **[PROCESS STARTED]** #\n\`\`\`\nProcess ${data.process.name} is now online.\nTime: ${timestamp}\n\`\`\``,
     online: (data, msg) =>
-      `# 🟢 **[PROCESS STARTED]** #\n\`\`\`\nProcess **${data.process.name}** is now online.\nTime: ${timestamp}\n\`\`\``,
+      `# 🟢 **[PROCESS STARTED]** #\n\`\`\`\nProcess ${data.process.name} is now online.\nTime: ${timestamp}\n\`\`\``,
     stop: (data, msg) =>
-      `# 🔴 **[PROCESS STOPPED]** #\n\`\`\`\nProcess **${data.process.name}** has been stopped.\nTime: ${timestamp}\n\`\`\``,
+      `# 🔴 **[PROCESS STOPPED]** #\n\`\`\`\nProcess ${data.process.name} has been stopped.\nTime: ${timestamp}\n\`\`\``,
     restart: (data, msg) =>
-      `# 🔄 **[PROCESS RESTARTING]** #\n\`\`\`\nProcess **${data.process.name}** is restarting.\nTime: ${timestamp}\n\`\`\``,
+      `# 🔄 **[PROCESS RESTARTING]** #\n\`\`\`\nProcess ${data.process.name} is restarting.\nTime: ${timestamp}\n\`\`\``,
     delete: (data, msg) =>
-      `# ❌ **[PROCESS DELETED]** #\n\`\`\`\nProcess **${data.process.name}** has been deleted.\nTime: ${timestamp}\n\`\`\``,
+      `# ❌ **[PROCESS DELETED]** #\n\`\`\`\nProcess ${data.process.name} has been deleted.\nTime: ${timestamp}\n\`\`\``,
     kill: (data, msg) =>
       `# 🔴 **[PM2 KILLED]** #\n\`\`\`\nPM2 has been killed.\nTime: ${timestamp}\n\`\`\``,
     default: (data, msg) => `\`\`\`\n${stripAnsi(msg)}\n\`\`\``,
