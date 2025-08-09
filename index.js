@@ -36,6 +36,7 @@ function sendToDiscord(message) {
 
   // The JSON payload to send to the Webhook with embed
   var payload = {
+    content: message.content,
     embeds: [message.embed],
   };
 
@@ -106,8 +107,8 @@ function processQueue() {
       sendToDiscord({
         name: "pm2-discord",
         event: "suppressed",
+        content: "# **⚠️ RATE LIMITING **",
         embed: {
-          title: "# ⚠️ RATE LIMITING #",
           description: "Messages are being suppressed due to rate limiting",
           color: 16776960, // Yellow
           fields: [
@@ -158,178 +159,197 @@ function createMessage(data, eventName, altDescription) {
   // Create embed formatters for different event types
   const embedFormatters = {
     error: (data, msg) => ({
-      title: "# 🚨 ERROR #",
-      description: `Error in **${data.process.name}**`,
-      color: 15158332, // Red
-      fields: [
-        {
-          name: "Error Message",
-          value: `\`\`\`\n${msg}\n\`\`\``,
-          inline: false,
-        },
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **🚨 ERROR **",
+      embed: {
+        description: `Error in **${data.process.name}**`,
+        color: 15158332, // Red
+        fields: [
+          {
+            name: "Error Message",
+            value: `\`\`\`\n${msg}\n\`\`\``,
+            inline: false,
+          },
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     exception: (data, msg) => ({
-      title: "# 🚨 EXCEPTION #",
-      description: `Exception in **${data.process.name}**`,
-      color: 15158332, // Red
-      fields: [
-        {
-          name: "Exception Details",
-          value: `\`\`\`\n${msg}\n\`\`\``,
-          inline: false,
-        },
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **🚨 EXCEPTION **",
+      embed: {
+        description: `Exception in **${data.process.name}**`,
+        color: 15158332, // Red
+        fields: [
+          {
+            name: "Exception Details",
+            value: `\`\`\`\n${msg}\n\`\`\``,
+            inline: false,
+          },
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     start: (data, msg) => ({
-      title: "# 🟢 PROCESS STARTED #",
-      description: `Process **${data.process.name}** is now online`,
-      color: 5763719, // Green
-      fields: [
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **🟢 PROCESS STARTED **",
+      embed: {
+        description: `Process **${data.process.name}** is now online`,
+        color: 5763719, // Green
+        fields: [
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     online: (data, msg) => ({
-      title: "# 🟢 PROCESS ONLINE #",
-      description: `Process **${data.process.name}** is now online`,
-      color: 5763719, // Green
-      fields: [
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **🟢 PROCESS ONLINE **",
+      embed: {
+        description: `Process **${data.process.name}** is now online`,
+        color: 5763719, // Green
+        fields: [
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     stop: (data, msg) => ({
-      title: "# 🔴 PROCESS STOPPED #",
-      description: `Process **${data.process.name}** has been stopped`,
-      color: 15158332, // Red
-      fields: [
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **🔴 PROCESS STOPPED **",
+      embed: {
+        description: `Process **${data.process.name}** has been stopped`,
+        color: 15158332, // Red
+        fields: [
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     restart: (data, msg) => ({
-      title: "# 🔄 PROCESS RESTARTING #",
-      description: `Process **${data.process.name}** is restarting`,
-      color: 16776960, // Yellow
-      fields: [
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **🔄 PROCESS RESTARTED **",
+      embed: {
+        description: `Process **${data.process.name}** is restarting`,
+        color: 16776960, // Yellow
+        fields: [
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     delete: (data, msg) => ({
-      title: "# ❌ PROCESS DELETED #",
-      description: `Process **${data.process.name}** has been deleted`,
-      color: 15158332, // Red
-      fields: [
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **❌ PROCESS DELETED **",
+      embed: {
+        description: `Process **${data.process.name}** has been deleted`,
+        color: 15158332, // Red
+        fields: [
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
     kill: (data, msg) => ({
-      title: "# 🔴 PM2 KILLED #",
-      description: "PM2 has been killed",
-      color: 15158332, // Red
-      fields: [
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-      ],
+      content: "# **🔴 PPM2 KILLED **",
+      embed: {
+        description: "PM2 has been killed",
+        color: 15158332, // Red
+        fields: [
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+        ],
+      },
     }),
     default: (data, msg) => ({
-      title: "# 📝 LOG #",
-      description: `Log from **${data.process.name}**`,
-      color: 3447003, // Blue
-      fields: [
-        {
-          name: "Message",
-          value: `\`\`\`\n${stripAnsi(msg)}\n\`\`\``,
-          inline: false,
-        },
-        {
-          name: "Time",
-          value: timestamp,
-          inline: true,
-        },
-        {
-          name: "Process",
-          value: data.process.name,
-          inline: true,
-        },
-      ],
+      content: "# **📝 LOG NOTIFICATION**",
+      embed: {
+        description: `Log from **${data.process.name}**`,
+        color: 3447003, // Blue
+        fields: [
+          {
+            name: "Message",
+            value: `\`\`\`\n${stripAnsi(msg)}\n\`\`\``,
+            inline: false,
+          },
+          {
+            name: "Time",
+            value: timestamp,
+            inline: true,
+          },
+          {
+            name: "Process",
+            value: data.process.name,
+            inline: true,
+          },
+        ],
+      },
     }),
   };
 
   // Find the formatter for the eventName, or use the default formatter
   const formatter = embedFormatters[eventName] || embedFormatters.default;
-  const embed = formatter(data, msg);
+  const result = formatter(data, msg);
 
   messages.push({
     name: data.process.name,
     event: eventName,
-    embed: embed,
+    content: result.content,
+    embed: result.embed,
     timestamp: Math.floor(Date.now() / 1000),
   });
 }
@@ -356,8 +376,8 @@ pm2.launchBus(function (err, bus) {
       messages.push({
         name: "PM2",
         event: "kill",
+        content: "# **🔴 PM2 KILLED **",
         embed: {
-          title: "# 🔴 PM2 KILLED #",
           description: "PM2 has been killed",
           color: 15158332, // Red
           fields: [
