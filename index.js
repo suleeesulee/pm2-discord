@@ -149,21 +149,21 @@ function createMessage(data, eventName, altDescription) {
   // Create a mapping of event names to their respective message formatters
   const formatters = {
     error: (data, msg) =>
-      `🚨 **[ERROR]** in **${data.process.name}**\n**Time:** ${timestamp}\n\`\`\`\n${msg}\n\`\`\``,
+      `# 🚨 **[ERROR]** in **${data.process.name}** #\n\`\`\`\n**Time:** ${timestamp}\n\n${msg}\n\`\`\``,
     exception: (data, msg) =>
-      `🚨 **[EXCEPTION]** in **${data.process.name}**\n**Time:** ${timestamp}\n\`\`\`\n${msg}\n\`\`\``,
+      `# 🚨 **[EXCEPTION]** in **${data.process.name}** #\n\`\`\`\n**Time:** ${timestamp}\n\n${msg}\n\`\`\``,
     start: (data, msg) =>
-      `🟢 **[PROCESS STARTED]**\nProcess **${data.process.name}** is now online.\n**Time:** ${timestamp}`,
+      `# 🟢 **[PROCESS STARTED]** #\n\`\`\`\nProcess **${data.process.name}** is now online.\n**Time:** ${timestamp}\n\`\`\``,
     online: (data, msg) =>
-      `🟢 **[PROCESS STARTED]**\nProcess **${data.process.name}** is now online.\n**Time:** ${timestamp}`,
+      `# 🟢 **[PROCESS STARTED]** #\n\`\`\`\nProcess **${data.process.name}** is now online.\n**Time:** ${timestamp}\n\`\`\``,
     stop: (data, msg) =>
-      `🔴 **[PROCESS STOPPED]**\nProcess **${data.process.name}** has been stopped.\n**Time:** ${timestamp}`,
+      `# 🔴 **[PROCESS STOPPED]** #\n\`\`\`\nProcess **${data.process.name}** has been stopped.\n**Time:** ${timestamp}\n\`\`\``,
     restart: (data, msg) =>
-      `🔄 **[PROCESS RESTARTING]**\nProcess **${data.process.name}** is restarting.\n**Time:** ${timestamp}`,
+      `# 🔄 **[PROCESS RESTARTING]** #\n\`\`\`\nProcess **${data.process.name}** is restarting.\n**Time:** ${timestamp}\n\`\`\``,
     delete: (data, msg) =>
-      `❌ **[PROCESS DELETED]**\nProcess **${data.process.name}** has been deleted.\n**Time:** ${timestamp}`,
+      `# ❌ **[PROCESS DELETED]** #\n\`\`\`\nProcess **${data.process.name}** has been deleted.\n**Time:** ${timestamp}\n\`\`\``,
     kill: (data, msg) =>
-      `🔴 **[PM2 KILLED]**\nPM2 has been killed.\n**Time:** ${timestamp}`,
+      `# 🔴 **[PM2 KILLED]** #\n\`\`\`\nPM2 has been killed.\n**Time:** ${timestamp}\n\`\`\``,
     default: (data, msg) => `\`\`\`\n${stripAnsi(msg)}\n\`\`\``,
   };
 
