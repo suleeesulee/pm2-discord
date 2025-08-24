@@ -25,10 +25,18 @@ var suppressed = {
   date: new Date().getTime(),
 };
 
+// urls
+const webhooks = {
+  raspberryError: conf.discord_url,
+  batch: conf.discord_batch_url,
+  batchError: conf.discord_batch_error_url,
+};
+let discordUrl = null;
+
 // Function to send event to Discord's Incoming Webhook
 function sendToDiscord(message) {
   // If a Discord URL is not set, we do not want to continue and nofify the user that it needs to be set
-  if (!conf.discord_url) {
+  if (!discordUrl) {
     return console.error(
       "There is no Discord URL set, please set the Discord URL: 'pm2 set pm2-discord:discord_url https://[discord_url]'"
     );
@@ -45,7 +53,7 @@ function sendToDiscord(message) {
     method: "post",
     body: payload,
     json: true,
-    url: conf.discord_url,
+    url: discordUrl,
   };
 
   // Finally, make the post request to the Discord Incoming Webhook
@@ -147,6 +155,16 @@ function createMessage(data, eventName, altDescription) {
   // that process gets output
   if (conf.process_name !== null && data.process.name !== conf.process_name) {
     return;
+  }
+
+  // set discord url
+  if (
+    data.process.name === "inhu-backend-user-dev" ||
+    data.process.name === "inhu-backend-admin-dev"
+  ) {
+    discordUrl = webhooks.raspberryError;
+  } else if (data.process.name === "inhu-backend-batch-dev") {
+    discordUrl = webhooks.batchError;
   }
 
   var msg = altDescription || data.data;
