@@ -35,7 +35,7 @@ let discordUrl = null;
 
 // Function to send event to Discord's Incoming Webhook
 function sendToDiscord(message) {
-  // If a Discord URL is not set, we do not want to continue and nofify the user that it needs to be set
+  // If a Discord URL is not set, we do not want to continue and notify the user that it needs to be set
   if (!discordUrl) {
     return console.error(
       "There is no Discord URL set, please set the Discord URL: 'pm2 set pm2-discord:discord_url https://[discord_url]'"
