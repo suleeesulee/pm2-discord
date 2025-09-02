@@ -35,7 +35,7 @@ let discordUrl = null;
 
 // Function to send event to Discord's Incoming Webhook
 function sendToDiscord(message) {
-  // If a Discord URL is not set, we do not want to continue and notify the user that it needs to be set
+  // If a Discord URL is not set, we do not want to continue and nofify the user that it needs to be set
   if (!discordUrl) {
     return console.error(
       "There is no Discord URL set, please set the Discord URL: 'pm2 set pm2-discord:discord_url https://[discord_url]'"
@@ -146,24 +146,52 @@ function processQueue() {
   }, 10000);
 }
 
+function makeEmbedFormat(content, color, msgName, msg, processName) {
+  return {
+    content: content,
+    embed: {
+      color: color,
+      fields: [
+        {
+          name: msgName,
+          value: `\`\`\`\n${msg}\n\`\`\``,
+          inline: false,
+        },
+        {
+          name: "Time",
+          value: new Date().toISOString().replace("T", " ").slice(0, 19),
+          inline: true,
+        },
+        {
+          name: "Process",
+          value: processName,
+          inline: true,
+        },
+      ],
+    },
+  };
+}
+
 function createMessage(data, eventName, altDescription) {
+  const processName = data.process.name;
+
   // we don't want to output pm2-discord's logs
-  if (data.process.name === "pm2-discord") {
+  if (processName === "pm2-discord") {
     return;
   }
   // if a specific process name was specified then we check to make sure only
   // that process gets output
-  if (conf.process_name !== null && data.process.name !== conf.process_name) {
+  if (conf.process_name !== null && processName !== conf.process_name) {
     return;
   }
 
   // set discord url
   if (
-    data.process.name === "inhu-backend-user-dev" ||
-    data.process.name === "inhu-backend-admin-dev"
+    processName === "inhu-backend-user-dev" ||
+    processName === "inhu-backend-admin-dev"
   ) {
     discordUrl = webhooks.raspberryError;
-  } else if (data.process.name === "inhu-backend-batch-dev") {
+  } else if (processName === "inhu-backend-batch-dev") {
     discordUrl = webhooks.batchError;
   }
 
@@ -172,199 +200,88 @@ function createMessage(data, eventName, altDescription) {
     msg = JSON.stringify(msg);
   }
 
-  const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
-
   // Create embed formatters for different event types
   const embedFormatters = {
-    error: (data, msg) => ({
-      content: "# **🚨 ERROR **",
-      embed: {
-        description: `Error in **${data.process.name}**`,
-        color: 15158332, // Red
-        fields: [
-          {
-            name: "Error Message",
-            value: `\`\`\`\n${msg}\n\`\`\``,
-            inline: false,
-          },
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    exception: (data, msg) => ({
-      content: "# **🚨 EXCEPTION **",
-      embed: {
-        description: `Exception in **${data.process.name}**`,
-        color: 15158332, // Red
-        fields: [
-          {
-            name: "Exception Details",
-            value: `\`\`\`\n${msg}\n\`\`\``,
-            inline: false,
-          },
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    start: (data, msg) => ({
-      content: "# **🟢 PROCESS STARTED **",
-      embed: {
-        description: `Process **${data.process.name}** is now online`,
-        color: 5763719, // Green
-        fields: [
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    online: (data, msg) => ({
-      content: "# **🟢 PROCESS ONLINE **",
-      embed: {
-        description: `Process **${data.process.name}** is now online`,
-        color: 5763719, // Green
-        fields: [
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    stop: (data, msg) => ({
-      content: "# **🔴 PROCESS STOPPED **",
-      embed: {
-        description: `Process **${data.process.name}** has been stopped`,
-        color: 15158332, // Red
-        fields: [
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    restart: (data, msg) => ({
-      content: "# **🔄 PROCESS RESTARTED **",
-      embed: {
-        description: `Process **${data.process.name}** is restarting`,
-        color: 16776960, // Yellow
-        fields: [
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    delete: (data, msg) => ({
-      content: "# **❌ PROCESS DELETED **",
-      embed: {
-        description: `Process **${data.process.name}** has been deleted`,
-        color: 15158332, // Red
-        fields: [
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    kill: (data, msg) => ({
-      content: "# **🔴 PPM2 KILLED **",
-      embed: {
-        description: "PM2 has been killed",
-        color: 15158332, // Red
-        fields: [
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-        ],
-      },
-    }),
-    default: (data, msg) => ({
-      content: "# **📝 LOG NOTIFICATION**",
-      embed: {
-        description: `Log from **${data.process.name}**`,
-        color: 3447003, // Blue
-        fields: [
-          {
-            name: "Message",
-            value: `\`\`\`\n${stripAnsi(msg)}\n\`\`\``,
-            inline: false,
-          },
-          {
-            name: "Time",
-            value: timestamp,
-            inline: true,
-          },
-          {
-            name: "Process",
-            value: data.process.name,
-            inline: true,
-          },
-        ],
-      },
-    }),
+    log: () =>
+      makeEmbedFormat(
+        "# **📜 LOG **",
+        5763719,
+        "Log Message",
+        msg,
+        processName
+      ),
+    error: () =>
+      makeEmbedFormat(
+        "# **🚨 ERROR **",
+        15158332,
+        "Error Message",
+        msg,
+        processName
+      ),
+    exception: () =>
+      makeEmbedFormat(
+        "# **🚨 EXCEPTION **",
+        15158332,
+        "Exception Message",
+        msg,
+        processName
+      ),
+    restart: () =>
+      makeEmbedFormat(
+        "# **🔄 PROCESS RESTARTED **",
+        16776960,
+        "Restart Message",
+        msg,
+        processName
+      ),
+    delete: () =>
+      makeEmbedFormat(
+        "# **❌ PROCESS DELETED **",
+        15158332,
+        "Delete Message",
+        msg,
+        processName
+      ),
+    stop: () =>
+      makeEmbedFormat(
+        "# **🔴 PROCESS STOPPED **",
+        15158332,
+        "Stop Message",
+        msg,
+        processName
+      ),
+    exit: () =>
+      makeEmbedFormat(
+        "# **🔴 PROCESS EXITED **",
+        15158332,
+        "Exit Message",
+        msg,
+        processName
+      ),
+    start: () =>
+      makeEmbedFormat(
+        "# **🟢 PROCESS STARTED **",
+        5763719,
+        "Start Message",
+        msg,
+        processName
+      ),
+    online: () =>
+      makeEmbedFormat(
+        "# **🟢 PROCESS ONLINE **",
+        5763719,
+        "Online Message",
+        msg,
+        processName
+      ),
   };
 
-  // Find the formatter for the eventName, or use the default formatter
-  const formatter = embedFormatters[eventName] || embedFormatters.default;
-  const result = formatter(data, msg);
+  // Find the formatter for the eventName
+  const formatter = embedFormatters[eventName];
+  const result = formatter();
 
   messages.push({
-    name: data.process.name,
+    name: processName,
     event: eventName,
     content: result.content,
     embed: result.embed,
