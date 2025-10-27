@@ -36,6 +36,7 @@
     "discord_error_url": null,
     "discord_batch_url": null,
     "discord_batch_error_url": null,
+    "discord_ec2_error_url": null,
     "process_name": null,
     "log": true,
     "error": false,

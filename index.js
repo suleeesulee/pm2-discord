@@ -30,6 +30,7 @@ const webhooks = {
   raspberryError: conf.discord_url,
   batch: conf.discord_batch_url,
   batchError: conf.discord_batch_error_url,
+  ec2Error: conf.discord_ec2_error_url,
 };
 let discordUrl = null;
 
@@ -193,6 +194,11 @@ function createMessage(data, eventName, altDescription) {
     discordUrl = webhooks.raspberryError;
   } else if (processName === "inhu-backend-batch-dev") {
     discordUrl = webhooks.batchError;
+  } else if (
+    processName === "inhu-backend" ||
+    processName === "inhu-backend-admin"
+  ) {
+    discordUrl = webhooks.ec2Error;
   }
 
   var msg = altDescription || data.data;
