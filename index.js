@@ -39,7 +39,7 @@ function sendToDiscord(message) {
   // If a Discord URL is not set, we do not want to continue and nofify the user that it needs to be set
   if (!discordUrl) {
     return console.error(
-      "There is no Discord URL set, please set the Discord URL: 'pm2 set pm2-discord:discord_url https://[discord_url]'"
+      "There is no Discord URL set, please set the Discord URL: 'pm2 set pm2-discord:discord_url https://[discord_url]'",
     );
   }
 
@@ -196,7 +196,8 @@ function createMessage(data, eventName, altDescription) {
     discordUrl = webhooks.batchError;
   } else if (
     processName === "inhu-backend" ||
-    processName === "inhu-backend-admin"
+    processName === "inhu-backend-admin" ||
+    processName === "inhu-backend-batch"
   ) {
     discordUrl = webhooks.ec2Error;
   }
@@ -214,7 +215,7 @@ function createMessage(data, eventName, altDescription) {
         5763719,
         "Log Message",
         msg,
-        processName
+        processName,
       ),
     error: () =>
       makeEmbedFormat(
@@ -222,7 +223,7 @@ function createMessage(data, eventName, altDescription) {
         15158332,
         "Error Message",
         msg,
-        processName
+        processName,
       ),
     exception: () =>
       makeEmbedFormat(
@@ -230,7 +231,7 @@ function createMessage(data, eventName, altDescription) {
         15158332,
         "Exception Message",
         msg,
-        processName
+        processName,
       ),
     restart: () =>
       makeEmbedFormat(
@@ -238,7 +239,7 @@ function createMessage(data, eventName, altDescription) {
         16776960,
         "Restart Message",
         msg,
-        processName
+        processName,
       ),
     delete: () =>
       makeEmbedFormat(
@@ -246,7 +247,7 @@ function createMessage(data, eventName, altDescription) {
         15158332,
         "Delete Message",
         msg,
-        processName
+        processName,
       ),
     stop: () =>
       makeEmbedFormat(
@@ -254,7 +255,7 @@ function createMessage(data, eventName, altDescription) {
         15158332,
         "Stop Message",
         msg,
-        processName
+        processName,
       ),
     exit: () =>
       makeEmbedFormat(
@@ -262,7 +263,7 @@ function createMessage(data, eventName, altDescription) {
         15158332,
         "Exit Message",
         msg,
-        processName
+        processName,
       ),
     start: () =>
       makeEmbedFormat(
@@ -270,7 +271,7 @@ function createMessage(data, eventName, altDescription) {
         5763719,
         "Start Message",
         msg,
-        processName
+        processName,
       ),
     online: () =>
       makeEmbedFormat(
@@ -278,7 +279,7 @@ function createMessage(data, eventName, altDescription) {
         5763719,
         "Online Message",
         msg,
-        processName
+        processName,
       ),
   };
 
