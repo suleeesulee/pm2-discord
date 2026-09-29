@@ -60,11 +60,17 @@ function sendToDiscord(message) {
   // Finally, make the post request to the Discord Incoming Webhook
   request(options, function (err, res, body) {
     if (err) {
-      return console.error(err);
+      return console.error(
+        `[pm2-discord] Discord webhook request failed (process=${message.name}, event=${message.event}):`,
+        err,
+      );
     }
     /* A successful POST to Discord's webhook responds with a 204 NO CONTENT */
-    if (res.statusCode !== 204) {
-      console.error("Error occured during the request to the Discord webhook");
+    if (!res || res.statusCode !== 204) {
+      console.error(
+        `[pm2-discord] Discord webhook rejected the request (process=${message.name}, event=${message.event}, status=${res ? res.statusCode : "no response"})`,
+        body,
+      );
     }
   });
 }
@@ -241,6 +247,14 @@ function createMessage(data, eventName, altDescription) {
         msg,
         processName,
       ),
+    "restart overlimit": () =>
+      makeEmbedFormat(
+        "# **🚨 RESTART LIMIT EXCEEDED **",
+        15158332,
+        "Restart Limit Message",
+        msg,
+        processName,
+      ),
     delete: () =>
       makeEmbedFormat(
         "# **❌ PROCESS DELETED **",
@@ -285,6 +299,14 @@ function createMessage(data, eventName, altDescription) {
 
   // Find the formatter for the eventName
   const formatter = embedFormatters[eventName];
+
+  if (typeof formatter !== "function") {
+    console.error(
+      `[pm2-discord] Unsupported PM2 event (process=${processName}, event=${eventName})`,
+    );
+    return;
+  }
+
   const result = formatter();
 
   messages.push({
