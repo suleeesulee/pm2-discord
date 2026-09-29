@@ -61,14 +61,14 @@ function sendToDiscord(message) {
   request(options, function (err, res, body) {
     if (err) {
       return console.error(
-        `[pm2-discord] Discord webhook request failed (process=${message.name}, event=${message.event}):`,
+        `[${new Date().toISOString()}] [pm2-discord] Discord webhook request failed (process=${message.name}, event=${message.event}):`,
         err,
       );
     }
     /* A successful POST to Discord's webhook responds with a 204 NO CONTENT */
     if (!res || res.statusCode !== 204) {
       console.error(
-        `[pm2-discord] Discord webhook rejected the request (process=${message.name}, event=${message.event}, status=${res ? res.statusCode : "no response"})`,
+        `[${new Date().toISOString()}] [pm2-discord] Discord webhook rejected the request (process=${message.name}, event=${message.event}, status=${res ? res.statusCode : "no response"})`,
         body,
       );
     }
@@ -302,7 +302,7 @@ function createMessage(data, eventName, altDescription) {
 
   if (typeof formatter !== "function") {
     console.error(
-      `[pm2-discord] Unsupported PM2 event (process=${processName}, event=${eventName})`,
+      `[${new Date().toISOString()}] [pm2-discord] Unsupported PM2 event (process=${processName}, event=${eventName})`,
     );
     return;
   }
